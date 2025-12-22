@@ -1,18 +1,27 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, CommonActions } from '@react-navigation/native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-type RootStackParamList = {
-  Login: undefined;
-  Home: undefined;
-};
-
-type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 export const HomePage = () => {
-  const navigation = useNavigation<NavigationProp>();
+  const navigation = useNavigation();
   const insets = useSafeAreaInsets();
+  
+  const handleLogout = async () => {
+    await AsyncStorage.removeItem('isLoggedIn');
+    // Navigate to Login screen in the parent stack navigator
+    const parent = navigation.getParent();
+    if (parent) {
+      parent.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [{ name: 'Login' }],
+        })
+      );
+    }
+  };
+  
   
   return (
     <View style={styles.container}>
@@ -20,7 +29,7 @@ export const HomePage = () => {
       <View style={[styles.header, { paddingTop: insets.top + 10 }]}>
         <TouchableOpacity 
           style={styles.logoutButton} 
-          onPress={() => navigation.navigate('Login')}>
+          onPress={() => handleLogout()}>
           <Text style={styles.buttonText}>Logout</Text>
         </TouchableOpacity>
       </View>

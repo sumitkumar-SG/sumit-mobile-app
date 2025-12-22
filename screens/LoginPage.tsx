@@ -1,7 +1,8 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type RootStackParamList = {
   Login: undefined;
@@ -42,18 +43,21 @@ const LoginScreen = () => {
     return isValid;
   }
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     if(!isValid()){
       return;
     }
 
     if (email === validEMail && password === validPassword) {
+      await AsyncStorage.setItem('isLoggedIn', 'true');
       navigation.replace('Main');
     } else {
       Alert.alert('Error', 'Invalid email or password');
     }
   };
-
+  const handleCTALogin = () => {
+      navigation.replace('Main');
+  };
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Login</Text>
@@ -91,6 +95,9 @@ const LoginScreen = () => {
 
       <TouchableOpacity style={styles.button} onPress={handleLogin}>
         <Text style={styles.buttonText}>Login</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.button} onPress={handleCTALogin}>
+        <Text style={styles.buttonText}>handle</Text>
       </TouchableOpacity>
     </View>
   );
