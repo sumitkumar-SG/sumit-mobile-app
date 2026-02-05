@@ -4,8 +4,6 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import SearchTab from '../screens/SearchTab';
 import ProfileTab from '../screens/ProfileTab';
 import { HomePage } from '../screens/HomePage';
-import NotificationsTab from './NotificationTab';
-import SettingsTab from './SettingsTab';
 
 const Tab = createBottomTabNavigator();
 
@@ -36,24 +34,7 @@ export default function BottomTabs() {
           ),
         }}
       />
-      <Tab.Screen
-        name="Notifications"
-        component={NotificationsTab}
-        options={{
-          tabBarIcon: ({ color, size }) => (
-            <Icon name="bell" size={size} color={color} />
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="Settings"
-        component={SettingsTab}
-        options={{
-          tabBarIcon: ({ color, size }) => (
-            <Icon name="cog" size={size} color={color} />
-          ),
-        }}
-      />
+
       <Tab.Screen
         name="Profile"
         component={ProfileTab}
