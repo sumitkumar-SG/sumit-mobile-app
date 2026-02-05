@@ -45,47 +45,76 @@ function App() {
   
     checkAuth();
   }, []);
-  
-  // useEffect(() => {
-  //   const initializeFirebase = async () => {
-  //     try {
-  //       // Use getApp() from @react-native-firebase/app (v22+ API)
-  //       const app = getApp();
-  //       console.log('✅ Firebase initialized:', app.name);
-        
-  //       // On iOS, register device for remote messages FIRST (before requesting permissions)
-  //       if (Platform.OS === 'ios') {
-  //         try {
-  //           await messaging().registerDeviceForRemoteMessages();
-  //           console.log('✅ Device registered for remote messages');
-  //         } catch (regError) {
-  //           console.log('⚠️ Device registration warning:', regError);
-  //           // Continue even if registration fails (might already be registered)
-  //         }
-  //       }
-        
-  //       // Request notification permissions using v22+ API
-  //       const authStatus = await messaging().requestPermission();
-  //       const enabled =
-  //         authStatus === AuthorizationStatus.AUTHORIZED ||
-  //         authStatus === AuthorizationStatus.PROVISIONAL;
 
-  //       if (enabled) {
-  //         // Get FCM token using v22+ API
-  //         // Add a small delay to ensure registration is complete
-  //         await new Promise<void>(resolve => setTimeout(() => resolve(), 500));
-  //         const token = await messaging().getToken();
-  //         console.log('🔥 Firebase FCM Token:', token);
-  //       } else {
-  //         console.log('⚠️ Notification permissions not granted');
-  //       }
-  //     } catch (error) {
-  //       console.error('❌ Firebase initialization error:', error);
-  //     }
-  //   };
-  
-  //   initializeFirebase();
-  // }, []);
+  // Firebase Initialization Verification (v22+ API)
+  useEffect(() => {
+    const verifyFirebase = () => {
+      // Make logs more visible
+      console.log('\n🔥 ========================================');
+      console.log('🔥 FIREBASE VERIFICATION STARTING...');
+      console.log('🔥 ========================================\n');
+      
+      try {
+        // Use getApp() from @react-native-firebase/app (v22+ modern API)
+        const app = getApp();
+        
+        // Success: Firebase native module is initialized and accessible
+        console.log('\n✅ ========================================');
+        console.log('✅ [Firebase Verification] SUCCESS');
+        console.log('✅ ========================================');
+        console.log('   App Name:', app.name);
+        console.log('   App Options:', JSON.stringify(app.options, null, 2));
+        console.log('   Firebase is ready for messaging/push notifications');
+        console.log('✅ ========================================\n');
+      } catch (error: any) {
+        // Enhanced error diagnostics
+        const errorMessage = error?.message || String(error);
+        const errorCode = error?.code || 'UNKNOWN';
+        
+        console.error('\n❌ ========================================');
+        console.error('❌ [Firebase Verification] FAILED');
+        console.error('❌ ========================================');
+        console.error('   Error Code:', errorCode);
+        console.error('   Error Message:', errorMessage);
+        
+        // Specific error handling
+        if (errorMessage.includes("No Firebase App '[DEFAULT]' has been created")) {
+          console.error('');
+          console.error('🔍 DIAGNOSIS: Native module is linked, but Firebase did not auto-initialize.');
+          console.error('');
+          console.error('   This means:');
+          console.error('   ✅ Native Firebase module IS available');
+          console.error('   ❌ GoogleService-Info.plist is NOT being read by native code');
+          console.error('');
+          console.error('   Common causes:');
+          console.error('   1. GoogleService-Info.plist not added to Xcode target');
+          console.error('   2. File not included in "Copy Bundle Resources" build phase');
+          console.error('   3. Build configuration issue (Debug vs Release)');
+          console.error('   4. Need to rebuild native app (not just JS bundle)');
+          console.error('');
+          console.error('   Action required:');
+          console.error('   → Open Xcode → Check GoogleService-Info.plist is in project');
+          console.error('   → Verify it appears in "Copy Bundle Resources"');
+          console.error('   → Clean build folder (Cmd+Shift+K)');
+          console.error('   → Rebuild native app (not just Metro reload)');
+        } else if (errorMessage.includes('Native module') || errorMessage.includes('not found')) {
+          console.error('');
+          console.error('🔍 DIAGNOSIS: Native Firebase module is not linked.');
+          console.error('');
+          console.error('   Action required:');
+          console.error('   → Run: cd ios && pod install');
+          console.error('   → Rebuild native app');
+        } else {
+          console.error('');
+          console.error('🔍 DIAGNOSIS: Unknown Firebase initialization error.');
+          console.error('   Check: 1) Native build completed, 2) Pods installed, 3) GoogleService-Info.plist added');
+        }
+        console.error('❌ ========================================\n');
+      }
+    };
+
+    verifyFirebase();
+  }, []);
   
   
 
