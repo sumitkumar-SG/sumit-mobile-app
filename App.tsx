@@ -48,6 +48,62 @@ function App() {
 
   // Firebase Initialization Verification (v22+ API)
   useEffect(() => {
+    const setupNotifications = async () => {
+      try {
+        const authStatus = await messaging().requestPermission();
+        const enabled =
+          authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+          authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+
+        if (enabled) {
+          console.log('🔔 [Notifications] Permission status:', authStatus);
+          const token = await messaging().getToken();
+          console.log('\n🚀 ========================================');
+          console.log('🚀 FCM TOKEN:', token);
+          console.log('🚀 ========================================\n');
+        } else {
+          console.log('❌ [Notifications] Permission denied');
+        }
+      } catch (error) {
+        console.error('❌ [Notifications] Setup error:', error);
+      }
+    };
+
+    setupNotifications();
+
+    // 1. Foreground Message Handler
+    const unsubscribeForeground = messaging().onMessage(async remoteMessage => {
+      console.log('✨ [Notifications] Received in Foreground:', JSON.stringify(remoteMessage, null, 2));
+      // You can add an alert or Notifee here if you want a visible popup while in foreground
+    });
+
+    // 2. Background Interaction Handler (App was open in background)
+    const unsubscribeBackgroundInteraction = messaging().onNotificationOpenedApp(remoteMessage => {
+      console.log('📂 [Notifications] App opened from background state:', remoteMessage.notification);
+    });
+
+    // 3. Quit State Interaction Handler (App was closed)
+    messaging()
+      .getInitialNotification()
+      .then(remoteMessage => {
+        if (remoteMessage) {
+          console.log('🎬 [Notifications] App opened from quit state:', remoteMessage.notification);
+        }
+      });
+
+    // Listen for token refresh
+    const unsubscribeTokenRefresh = messaging().onTokenRefresh(token => {
+      console.log('🔄 [Notifications] Token Refreshed:', token);
+    });
+
+    return () => {
+      unsubscribeForeground();
+      unsubscribeBackgroundInteraction();
+      unsubscribeTokenRefresh();
+    };
+  }, []);
+
+  useEffect(() => {
     const verifyFirebase = () => {
       // Make logs more visible
       console.log('\n🔥 ========================================');

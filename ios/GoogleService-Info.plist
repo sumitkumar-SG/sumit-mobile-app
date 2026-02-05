@@ -9,7 +9,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.sumitkumar.awesomeproject</string>
+	<string>com.studiographene.sg.assignmentapp</string>
 	<key>PROJECT_ID</key>
 	<string>awesomeproject-c8fb7</string>
 	<key>STORAGE_BUCKET</key>
@@ -25,6 +25,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:644417062604:ios:bea8fd82766dc110232469</string>
+	<string>1:644417062604:ios:1483da710cd98cc9232469</string>
 </dict>
 </plist>

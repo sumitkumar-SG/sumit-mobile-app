@@ -7,7 +7,6 @@ import Firebase
 import FirebaseCore
 import FirebaseMessaging
 import UserNotifications
-import FirebaseRemoteConfig
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate, MessagingDelegate, UNUserNotificationCenterDelegate {
