@@ -22,6 +22,7 @@ class MainApplication : Application(), ReactApplication {
 
   override fun onCreate() {
     super.onCreate()
+    // Firebase auto-initializes from google-services.json when google-services plugin is applied
     loadReactNative(this)
   }
 }
